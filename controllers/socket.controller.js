@@ -6,8 +6,9 @@ import * as model from "../models/socket.model.js";
 
 export const renderIndex = async (req, res, next) => {
   try {
-    const users = await model.getAllUsers();
-    res.render("index", { users });
+    // No DB call here anymore — page renders instantly and the client
+    // fetches the users as JSON from /users to avoid the Vercel delay.
+    res.render("index");
   } catch (err) {
     next(res.status(200).json({ status: false, message: err }));
   }
@@ -28,7 +29,15 @@ export const registerUser = async (req, res, next) => {
       return res.status(200).json({ success: false, errors: v.errors });
     }
 
-    const newUser = await model.insertUser(req.body);
+    let newUser;
+    try {
+      newUser = await model.insertUser(req.body);
+    } catch (err) {
+      if (err.isDuplicate) {
+        return res.status(200).json({ status: false, message: err.message });
+      }
+      throw err;
+    }
 
     // emit to connected clients via socket.io
     const io = req.app.get("io");
