@@ -118,24 +118,11 @@
           <th>Email</th>
           <th>Phone</th>
           <th>Created By</th>
-          <th>Created At</th>
+          <th>Created Date & Time</th>
         </tr>
       </thead>
       <tbody id="tbody">
-        <% if (users && users.length > 0) { %>
-          <% users.forEach(function(user, idx){ %>
-            <tr data-id="<%= user.id %>">
-              <td><%= idx + 1 %></td> <!-- S.no -->
-              <td><%= user.full_name %></td>
-              <td><%= user.email %></td>
-              <td><%= user.phone_number %></td>
-              <td><%= user.created_by %></td>
-              <td><%= new Date(user.created_dt).toLocaleString() %></td>
-            </tr>
-          <% }); %>
-        <% } else { %>
-          <tr class="no-data"><td colspan="6">No records found</td></tr>
-        <% } %>
+        <tr class="no-data"><td colspan="6">Loading...</td></tr>
       </tbody>
     </table>
   </div>
@@ -148,13 +135,13 @@
     (function(){
       const socket = io();
 
-      function addRow(user) {
+      function addRow(user, isNew) {
         const tbody = document.getElementById("tbody");
         const noDataRow = tbody.querySelector(".no-data");
         if (noDataRow) noDataRow.remove();
 
         const tr = document.createElement("tr");
-        tr.classList.add("new-row");
+        if (isNew) tr.classList.add("new-row");
         tr.setAttribute("data-id", user.id);
 
         const createdAt = user.created_dt ? new Date(user.created_dt).toLocaleString() : new Date().toLocaleString();
@@ -174,12 +161,37 @@
 
         // append at bottom (ascending S.no)
         tbody.appendChild(tr);
-        setTimeout(()=> tr.classList.remove("new-row"), 2500);
+        if (isNew) setTimeout(()=> tr.classList.remove("new-row"), 2500);
       }
 
       socket.on("user:created", (user) => {
-        addRow(user);
+        addRow(user, true);
       });
+
+      // Fetch the current users list as JSON instead of the server
+      // rendering the table (avoids the slow blocking render on Vercel)
+      async function loadUsers() {
+        const tbody = document.getElementById("tbody");
+        try {
+          const res = await fetch("/users");
+          const json = await res.json();
+          const users = (json && json.data) || [];
+
+          tbody.innerHTML = "";
+
+          if (users.length === 0) {
+            tbody.innerHTML = '<tr class="no-data"><td colspan="6">No records found</td></tr>';
+            return;
+          }
+
+          users.forEach((user) => addRow(user));
+        } catch (err) {
+          tbody.innerHTML = '<tr class="no-data"><td colspan="6">Failed to load data</td></tr>';
+          console.error("Failed to load users:", err);
+        }
+      }
+
+      loadUsers();
 
       function escapeHtml(text) {
         if (text === null || text === undefined) return "";

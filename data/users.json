@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "full_name": "Sundaram Veeramani",
+    "email": "sundaram@yopmail.com",
+    "phone_number": "9876543210",
+    "created_by": "Sundaram",
+    "created_dt": "2026-09-05 23:06:45"
+  },
+  {
+    "id": 2,
+    "full_name": "Mithun Mahesh",
+    "email": "mithun@yopmail.com",
+    "phone_number": "9876543211",
+    "created_by": "Mithun",
+    "created_dt": "2026-09-05 23:07:11"
+  },
+  {
+    "id": 3,
+    "full_name": "Kathir Velu",
+    "email": "kathir@yopmail.com",
+    "phone_number": "9876541211",
+    "created_by": "Kathir",
+    "created_dt": "2026-09-05 23:07:26"
+  },
+  {
+    "id": 4,
+    "full_name": "Giri Charan",
+    "email": "giri@yopmail.com",
+    "phone_number": "9876543212",
+    "created_by": "Giri",
+    "created_dt": "2026-09-05 23:07:39"
+  },
+  {
+    "id": 5,
+    "full_name": "Girinath S",
+    "email": "girinath@yopmail.com",
+    "phone_number": "9876543213",
+    "created_by": "Girinath",
+    "created_dt": "2026-09-05 23:07:47"
+  },
+  {
+    "id": 6,
+    "full_name": "Franklin S",
+    "email": "franklin@yopmail.com",
+    "phone_number": "9876544413",
+    "created_by": "Franklin",
+    "created_dt": "2026-09-05 23:08:52"
+  }
+]
